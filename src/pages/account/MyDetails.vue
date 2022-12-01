@@ -4,7 +4,7 @@
       <q-toolbar-title>My Details</q-toolbar-title>
     </q-toolbar>
 
-    <q-scrool-are class="form-style">
+    <q-scroll-area class="form-style">
       <q-form class="q-pa-md q-gutter-y-md" @submit.prevent="handleUpdateDetails">
         <div class="text-h6">Update your details!</div>
 
@@ -25,7 +25,7 @@
         </q-btn>
 
       </q-form>
-    </q-scrool-are>
+    </q-scroll-area>
   </q-page>
 </template>
 

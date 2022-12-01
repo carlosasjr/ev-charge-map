@@ -13,7 +13,7 @@
     </q-page-container>
 
     <q-footer elevated>
-      <q-tabs v-model="tab" class="text-light bg-teal">
+      <q-tabs class="text-light bg-teal">
         <q-route-tab to="/map" icon="explore" label="Map" />
         <q-route-tab to="/route" icon="directions" label="Routes" />
         <q-route-tab to="/auth" icon="login" label="Auth" />

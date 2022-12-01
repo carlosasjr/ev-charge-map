@@ -15,7 +15,7 @@
       <div class="q-pa-md info">This is where you can add most favorite or common jorneys!</div>
     </div>
 
-    <q-scroll-are class="list">
+    <q-scroll-area class="list">
       <q-list>
         <q-item>
           <q-item-section top avatar>
@@ -44,7 +44,7 @@
           </q-item-section>
         </q-item>
       </q-list>
-    </q-scroll-are>
+    </q-scroll-area>
   </q-page>
 
 </template>

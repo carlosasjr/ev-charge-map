@@ -4,7 +4,7 @@
       <q-toolbar-title>Register</q-toolbar-title>
     </q-toolbar>
 
-    <q-scrool-are class="form-style">
+    <q-scroll-area class="form-style">
       <div class="text-h6 text-center q-mt-md">
         <q-img src="/favicon.ico" height="60px" width="60px" />
         <div>Ev Charge Map</div>
@@ -44,7 +44,7 @@
           </template>
         </q-btn>
       </q-form>
-    </q-scrool-are>
+    </q-scroll-area>
   </q-page>
 </template>
 

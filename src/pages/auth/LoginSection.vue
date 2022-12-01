@@ -4,7 +4,7 @@
       <q-toolbar-title>Login</q-toolbar-title>
     </q-toolbar>
 
-    <q-scrool-are class="form-style">
+    <q-scroll-area class="form-style">
       <div class="text-h6 text-center q-mt-md">
         <q-img src="/favicon.ico" height="60px" width="60px" />
         <div>Ev Charge Map</div>
@@ -33,18 +33,31 @@
           <q-btn label="Register Here" color="teal" outline rounded to="/auth/register" size="15px" />
         </div>
       </q-form>
-    </q-scrool-are>
+    </q-scroll-area>
   </q-page>
 </template>
 
 <script>
 import { defineComponent, reactive } from 'vue'
+import { api } from 'boot/axios'
 
 export default defineComponent({
   name: 'LoginSectionPage',
   setup () {
     const handleLogin = async () => {
       data.loading = true
+
+      try {
+        await api.get('/sanctum/csrf-cookie')
+        await api.post('/login', data.form)
+
+        const user = await api.get('/api/user')
+        console.log(user.data)
+      } catch (error) {
+
+      } finally {
+        data.loading = false
+      }
     }
 
     const data = reactive({
