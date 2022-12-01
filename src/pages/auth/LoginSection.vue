@@ -1,0 +1,78 @@
+<template>
+  <q-page id="LoginPage">
+    <q-toolbar class="text-white bg-teal-8">
+      <q-toolbar-title>Login</q-toolbar-title>
+    </q-toolbar>
+
+    <q-scrool-are class="form-style">
+      <div class="text-h6 text-center q-mt-md">
+        <q-img src="/favicon.ico" height="60px" width="60px" />
+        <div>Ev Charge Map</div>
+      </div>
+
+      <q-form class="q-pa-md q-gutter-y-md"  @submit.prevent="handleLogin">
+        <q-input v-model="data.form.email" type="email" outlined stack-label label="Email" lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Email is required']" />
+
+        <q-input v-model="data.form.password" type="password" outlined stack-label label="Password" lazy-rules :rules="[
+          (val) => (val && val.length > 0) || 'Password is required',
+          (val) =>
+            (val && val.length >= 6) ||
+            'Password should be at least 6 characters',
+        ]" />
+
+        <q-btn :loading="data.loading" label="Login" color="black" class="full-width" size="lg" type="submit">
+          <template v-slot:loading>
+            <q-spinner-hourglass class="on-left" />
+            Logging in...
+          </template>
+        </q-btn>
+
+        <div class="q-px-md q-mt-xl text-center">
+          <div class="q-mb-md no-account">Don't have an account?</div>
+          <q-btn label="Register Here" color="teal" outline rounded to="/auth/register" size="15px" />
+        </div>
+      </q-form>
+    </q-scrool-are>
+  </q-page>
+</template>
+
+<script>
+import { defineComponent, reactive } from 'vue'
+
+export default defineComponent({
+  name: 'LoginSectionPage',
+  setup () {
+    const handleLogin = async () => {
+      data.loading = true
+    }
+
+    const data = reactive({
+      loading: false,
+      form: {
+        email: '',
+        password: ''
+      }
+    })
+
+    return {
+      data,
+      handleLogin
+    }
+  }
+})
+</script>
+
+<style lang='scss'>
+#LoginPage {
+  .form-style {
+    margin: 0 auto;
+    height: calc(100vh - 180px);
+    max-width: 500px;
+  }
+
+  .no-account {
+    font-size: 17px;
+  }
+}
+</style>
