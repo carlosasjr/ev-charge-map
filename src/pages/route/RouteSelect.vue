@@ -26,15 +26,20 @@
         <q-btn size="lg" class="full-width" color="black" label="Search" />
       </div>
     </div>
+
+    <InputAutocomplete label="Teste" />
+
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import InputAutocomplete from 'src/components/routePage/InputAutocomplete.vue'
 
 export default defineComponent({
   name: 'RouteSelectPage',
-  setup () { }
+  setup () { },
+  components: { InputAutocomplete }
 })
 </script>
 
