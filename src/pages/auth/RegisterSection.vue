@@ -13,10 +13,10 @@
       <q-form class="q-pa-md q-gutter-y-md" @submit.prevent="handleRegister">
         <div class="text-center">Register and get extra features!</div>
 
-        <q-input v-model="data.form.firstName" outlined stack-label label="First Name" lazy-rules
+        <q-input v-model="data.form.first_name" outlined stack-label label="First Name" lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Name is required']" />
 
-        <q-input v-model="data.form.lastName" outlined stack-label label="Last Name" lazy-rules
+        <q-input v-model="data.form.last_name" outlined stack-label label="Last Name" lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Last Name is required']" />
 
         <q-input v-model="data.form.email" type="email" outlined stack-label label="Email" lazy-rules
@@ -25,16 +25,16 @@
         <q-input v-model="data.form.password" type="password" outlined stack-label label="Password" lazy-rules :rules="[
           (val) => (val && val.length > 0) || 'Password is required',
           (val) =>
-            (val && val.length >= 6) ||
-            'Password should be at least 6 characters',
+            (val && val.length >= 8) ||
+            'Password should be at least 8 characters',
         ]" />
 
-        <q-input v-model="data.form.confirmPassword" type="password" outlined stack-label label="Confirm Password"
+        <q-input v-model="data.form.password_confirmation" type="password" outlined stack-label label="Confirm Password"
           lazy-rules :rules="[
             (val) => (val && val.length > 0) || 'Password is required',
             (val) =>
-              (val && val.length >= 6) ||
-              'Password should be at least 6 characters',
+              (val && val.length >= 8) ||
+              'Password should be at least 8 characters',
           ]" />
 
         <q-btn :loading="data.loading" label="Register" color="black" class="full-width" size="lg" type="submit">
@@ -50,23 +50,37 @@
 
 <script>
 import { defineComponent, reactive } from 'vue'
+import { useUserStore } from 'stores/user-store'
 
 export default defineComponent({
   name: 'RegisterSectionPage',
   setup () {
+    const useStore = useUserStore()
+
     const data = reactive({
       loading: false,
       form: {
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        password_confirmation: ''
       }
     })
 
     const handleRegister = async () => {
       data.loading = true
+
+      try {
+        await useStore.getSanctumCookie()
+        await useStore.register(data.form)
+        const user = await useStore.fetchUser()
+        useStore.setUser(user)
+      } catch (error) {
+
+      } finally {
+        data.loading = false
+      }
     }
 
     return {

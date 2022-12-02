@@ -5,6 +5,11 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
+        path: '/map',
+        component: () => import('pages/MapPage.vue')
+      },
+
+      {
         path: '/route',
         component: () => import('pages/RoutePage.vue'),
         children: [

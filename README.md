@@ -6,14 +6,32 @@ Find Ev charge points for your journey
 ```bash
 yarn
 # or
-npm install
-```
+npm i pinia-plugin-persistedstate
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
 
+## Configurations Maps
+
+## Google api key
+https://console.cloud.google.com/
+ #criar novo projeto
+ #api and services
+ #credentials
+ #   + create credentials / Api Key
+ #   copiar api key e informar no env.GOOGLE_MAPS_API_KEY
+
+ #library
+ # Enabled Maps JavaScript Api
+ # Additional APIS
+ # Enalbed Places API
+
+#Open Charge Map
+http://openchargemap.io
+ # My Profile
+ # My Apps
+ # Register an application
+
+ #config javascript
+ #https://developers.google.com/maps/documentation/javascript/overview#maps_map_simple-javascript
 
 ### Lint the files
 ```bash

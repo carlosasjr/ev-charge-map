@@ -17,8 +17,8 @@
         <q-input v-model="data.form.password" type="password" outlined stack-label label="Password" lazy-rules :rules="[
           (val) => (val && val.length > 0) || 'Password is required',
           (val) =>
-            (val && val.length >= 6) ||
-            'Password should be at least 6 characters',
+            (val && val.length >= 8) ||
+            'Password should be at least 8 characters',
         ]" />
 
         <q-btn :loading="data.loading" label="Login" color="black" class="full-width" size="lg" type="submit">
@@ -39,22 +39,30 @@
 
 <script>
 import { defineComponent, reactive } from 'vue'
-import { api } from 'boot/axios'
+import { useRouter } from 'vue-router'
+import { useUserStore } from 'stores/user-store'
+import useNotify from 'src/composables/useNotify'
 
 export default defineComponent({
   name: 'LoginSectionPage',
   setup () {
+    const userStore = useUserStore()
+    const router = useRouter()
+    const { notifyError, notifySuccess } = useNotify()
+
     const handleLogin = async () => {
       data.loading = true
 
       try {
-        await api.get('/sanctum/csrf-cookie')
-        await api.post('/login', data.form)
+        await userStore.getSanctumCookie()
+        await userStore.login(data.form.email, data.form.password)
+        const user = await userStore.fetchUser()
+        userStore.setUser(user)
 
-        const user = await api.get('/api/user')
-        console.log(user.data)
+        notifySuccess('Welcome back, ' + userStore.getFirstName + '!')
+        router.push('/route')
       } catch (error) {
-
+        notifyError('Your login was unsuccessful. Please make sure that your details are correct.')
       } finally {
         data.loading = false
       }
