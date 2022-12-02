@@ -10,13 +10,13 @@
         Where would you like to go?
       </div>
 
-      <q-input outlined stack-label label="From">
+      <q-input @click="setAddress('From')" outlined stack-label label="From">
         <template v-slot:append>
           <q-icon name="close" />
         </template>
       </q-input>
 
-      <q-input outlined stack-label label="To">
+      <q-input @click="setAddress('To')" outlined stack-label label="To">
         <template v-slot:append>
           <q-icon name="close" />
         </template>
@@ -27,18 +27,44 @@
       </div>
     </div>
 
-    <InputAutocomplete label="Teste" />
+    <InputAutocomplete
+      :label="data.label"
+      v-if="data.show"
+      @address="getAddress($event)"
+      @input-visible="data.show = $event "
+
+      />
 
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import InputAutocomplete from 'src/components/routePage/InputAutocomplete.vue'
 
 export default defineComponent({
   name: 'RouteSelectPage',
-  setup () { },
+  setup () {
+    const data = reactive({
+      show: false,
+      label: ''
+    })
+
+    const getAddress = (event) => {
+      console.log(event)
+    }
+
+    const setAddress = (newLabel) => {
+      data.label = newLabel
+      data.show = !data.show
+    }
+
+    return {
+      data,
+      getAddress,
+      setAddress
+    }
+  },
   components: { InputAutocomplete }
 })
 </script>

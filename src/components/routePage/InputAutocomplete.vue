@@ -1,48 +1,35 @@
 <template>
   <q-page id="inputAutocomplete">
     <div class="head">
-      <q-input @update:model-value="handleGetPlaces"
-               :label="label"
-               debounce="400"
-               class="input"
-               outlined
-               autofocus
-               color="white"
-               bg-color="white"
-               label-color="black">
-        <template>
-          <q-icon name="close" />
+      <q-input v-model="data.input" debounce="500" :label="label" class="input" outlined autofocus color="white"
+        bg-color="white" label-color="black">
+        <template v-slot:append>
+          <q-icon @click="emit('input-visible', false)"  name="close" />
         </template>
       </q-input>
     </div>
 
     <div class="addresses">
-      <q-list bordered separator>
-        <q-item clickable v-ripple>
-          <q-item-section>Single line item</q-item-section>
-        </q-item>
+      <div v-for="addr in data.addresses" :key="addr.place_id">
+        <q-list bordered separator>
 
-        <q-item clickable v-ripple>
-          <q-item-section>
-            <q-item-label>Item with caption</q-item-label>
-            <q-item-label caption>Caption</q-item-label>
-          </q-item-section>
-        </q-item>
+          <q-item clickable v-ripple
+          @click="getAdderss(label, addr.description)"
+          >
+            <q-item-section>
+              <q-item-label>{{ addr.description }}</q-item-label>
+            </q-item-section>
 
-        <q-item clickable v-ripple>
-          <q-item-section>
-            <q-item-label overline>OVERLINE</q-item-label>
-            <q-item-label>Item with caption</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
+          </q-item>
+        </q-list>
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
 
-import { defineComponent } from 'vue'
+import { defineComponent, reactive, watch } from 'vue'
 import { api } from 'src/boot/axios'
 import { useUserStore } from 'stores/user-store'
 
@@ -56,23 +43,39 @@ export default defineComponent({
     }
   },
 
-  setup () {
+  setup (props, { emit }) {
     const useStore = useUserStore()
+
+    const data = reactive({
+      input: '',
+      addresses: []
+    })
 
     const handleGetPlaces = async (input) => {
       try {
         if (input) {
           await useStore.getSanctumCookie()
-          const res = await api.post('/api/places', { input })
-          console.log(res)
+          const response = await api.post('/api/places', { input })
+          data.addresses = response.data.places.predictions
         }
       } catch (error) {
         console.log(error)
       }
     }
 
+    const getAdderss = (label, description) => {
+      const adderssDetails = { label, description }
+
+      emit('address', adderssDetails)
+      emit('input-visible', false)
+    }
+
+    watch(() => data.input, handleGetPlaces)
+
     return {
-      handleGetPlaces
+      data,
+      emit,
+      getAdderss
     }
   }
 })
