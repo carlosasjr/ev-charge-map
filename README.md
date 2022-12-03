@@ -23,6 +23,7 @@ https://console.cloud.google.com/
  # Enabled Maps JavaScript Api
  # Additional APIS
  # Enalbed Places API
+ # Directions - API
 
 #Open Charge Map
 http://openchargemap.io

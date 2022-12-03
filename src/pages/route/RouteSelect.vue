@@ -10,20 +10,20 @@
         Where would you like to go?
       </div>
 
-      <q-input @click="setAddress('From')" outlined stack-label label="From">
+      <q-input v-model="data.form.from"  @click="setAddress('From')" outlined stack-label label="From">
         <template v-slot:append>
           <q-icon name="close" />
         </template>
       </q-input>
 
-      <q-input @click="setAddress('To')" outlined stack-label label="To">
+      <q-input v-model="data.form.to" @click="setAddress('To')" outlined stack-label label="To">
         <template v-slot:append>
           <q-icon name="close" />
         </template>
       </q-input>
 
       <div>
-        <q-btn size="lg" class="full-width" color="black" label="Search" />
+        <q-btn @click="handleSearch" size="lg" class="full-width" color="black" label="Search" />
       </div>
     </div>
 
@@ -41,17 +41,35 @@
 <script>
 import { defineComponent, reactive } from 'vue'
 import InputAutocomplete from 'src/components/routePage/InputAutocomplete.vue'
+import { useRouteStore } from 'src/stores/route-store'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'RouteSelectPage',
   setup () {
+    const routeStore = useRouteStore()
+    const route = useRouter()
+
     const data = reactive({
       show: false,
-      label: ''
+      label: '',
+      form: {
+        from: '',
+        to: '',
+        range: '2'
+      }
     })
 
     const getAddress = (event) => {
-      console.log(event)
+      const selectedLabel = event.label
+
+      if (selectedLabel === 'From') {
+        data.form.from = event.description
+      }
+
+      if (selectedLabel === 'To') {
+        data.form.to = event.description
+      }
     }
 
     const setAddress = (newLabel) => {
@@ -59,10 +77,17 @@ export default defineComponent({
       data.show = !data.show
     }
 
+    const handleSearch = () => {
+      routeStore.setRoute(data.form)
+
+      route.push('/map')
+    }
+
     return {
       data,
       getAddress,
-      setAddress
+      setAddress,
+      handleSearch
     }
   },
   components: { InputAutocomplete }
