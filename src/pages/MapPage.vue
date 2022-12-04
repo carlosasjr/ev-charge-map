@@ -1,5 +1,10 @@
 <template>
   <div id="map"></div>
+
+  <ChargerInfo
+    v-model:clickLocation="data.clickLocation"
+    v-model:dialog="data.dialog"
+  />
 </template>
 
 <script>
@@ -7,9 +12,14 @@ import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { googleObject } from '../boot/google'
 import { axiosOpenCharge } from 'src/boot/axios'
 import { useRouteStore } from 'src/stores/route-store'
+import ChargerInfo from 'src/components/mapPage/ChargerInfo.vue'
 
 export default defineComponent({
   name: 'MapPage',
+  components: {
+    ChargerInfo
+  },
+
   setup () {
     const routeStore = useRouteStore()
 
@@ -18,6 +28,8 @@ export default defineComponent({
     const latLngs = []
 
     const data = reactive({
+      dialog: false,
+      clickLocation: null,
       routeResults: null
     })
 
@@ -114,7 +126,8 @@ export default defineComponent({
         })
 
         window.google.maps.event.addListener(marker, 'click', () => {
-          console.log(singleLocation)
+          data.clickLocation = singleLocation
+          data.dialog = true
         })
       }
     }
@@ -124,6 +137,10 @@ export default defineComponent({
         await getChargePointData(data.routeResults)
       }
     })
+
+    return {
+      data
+    }
   }
 })
 </script>
