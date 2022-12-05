@@ -2,8 +2,11 @@
   <div id="map"></div>
 
   <ChargerInfo
-    v-model:clickLocation="data.clickLocation"
+    v-model:clickedLocation="data.clickedLocation"
     v-model:dialog="data.dialog"
+    v-model:via="data.via"
+    @addToViaArray="addToViaArray"
+    @removeFromViaArray="removeFromViaArray"
   />
 </template>
 
@@ -29,7 +32,8 @@ export default defineComponent({
 
     const data = reactive({
       dialog: false,
-      clickLocation: null,
+      via: [],
+      clickedLocation: null,
       routeResults: null
     })
 
@@ -126,10 +130,34 @@ export default defineComponent({
         })
 
         window.google.maps.event.addListener(marker, 'click', () => {
-          data.clickLocation = singleLocation
+          data.clickedLocation = singleLocation
           data.dialog = true
         })
       }
+    }
+
+    const addToViaArray = (address) => {
+      data.via.push(address)
+    }
+
+    const removeFromViaArray = (address) => {
+      /* const array = toRaw(data.via)
+
+      data.via = []
+
+      for (let i = 0; i < array.length; i++) {
+        if (array[i][2] === address[2]) {
+          array.splice(i, 1)
+        }
+      }
+
+      for (let i = 0; i < array.length; i++) {
+        data.via.push(array[1])
+      } */
+
+      data.via = data.via.filter((via) => {
+        return via[2] !== address[2]
+      })
     }
 
     watch(() => data.routeResults, async (newRouteResult, oldRouteResult) => {
@@ -139,7 +167,9 @@ export default defineComponent({
     })
 
     return {
-      data
+      data,
+      addToViaArray,
+      removeFromViaArray
     }
   }
 })

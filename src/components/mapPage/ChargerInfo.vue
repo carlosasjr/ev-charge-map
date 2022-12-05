@@ -17,30 +17,30 @@
             <q-item-section>
               <q-item-label class="text-h6 q-pl-sm">Charger Location</q-item-label>
               <q-item-label caption class="q-pa-sm">
-                <div v-if="clickLocation[2].Title" class="addressSection">
-                  {{ clickLocation[2].Title }}
+                <div v-if="clickedLocation[2].Title" class="addressSection">
+                  {{ clickedLocation[2].Title }}
                 </div>
 
-                <div v-if="clickLocation[2].AddressLine1" class="addressSection">
-                  {{ clickLocation[2].AddressLine1 }}
+                <div v-if="clickedLocation[2].AddressLine1" class="addressSection">
+                  {{ clickedLocation[2].AddressLine1 }}
                 </div>
 
-                <div v-if="clickLocation[2].Town" class="addressSection">
-                  {{ clickLocation[2].Town }}
+                <div v-if="clickedLocation[2].Town" class="addressSection">
+                  {{ clickedLocation[2].Town }}
                 </div>
 
-                <div v-if="clickLocation[2].ToPostcodewn" class="addressSection">
-                  {{ clickLocation[2].Postcode }}
+                <div v-if="clickedLocation[2].ToPostcodewn" class="addressSection">
+                  {{ clickedLocation[2].Postcode }}
                 </div>
               </q-item-label>
 
               <div class="row items-center status">
                 <q-icon name="power" size="35px" />
                 <div :class="{
-                  isAvailableClass: clickLocation[3][0].StatusType.IsOperational,
-                  isNotAvailableClass: !clickLocation[3][0].StatusType.IsOperational,
+                  isAvailableClass: clickedLocation[3][0].StatusType.IsOperational,
+                  isNotAvailableClass: !clickedLocation[3][0].StatusType.IsOperational,
                 }">
-                  {{ clickLocation[3][0].StatusType.Title }}
+                  {{ clickedLocation[3][0].StatusType.Title }}
                 </div>
               </div>
 
@@ -53,15 +53,15 @@
               <q-item-label class="text-h6 q-pl-sm">Connection Type</q-item-label>
               <q-item-label caption class="q-pa-sm">
                 <q-item-label caption class="q-pa-sm">
-                  <div v-if="clickLocation[3][0].ConnectionType.FormalName" class="connectionTypeSection">
-                    Name: {{ clickLocation[3][0].ConnectionType.FormalName }}
+                  <div v-if="clickedLocation[3][0].ConnectionType.FormalName" class="connectionTypeSection">
+                    Name: {{ clickedLocation[3][0].ConnectionType.FormalName }}
                   </div>
 
-                  <div v-if="clickLocation[3][0].ConnectionType.Title" class="connectionTypeSection">
-                    Title: {{ clickLocation[3][0].ConnectionType.Title }}
+                  <div v-if="clickedLocation[3][0].ConnectionType.Title" class="connectionTypeSection">
+                    Title: {{ clickedLocation[3][0].ConnectionType.Title }}
                   </div>
 
-                  <div v-if="clickLocation[3][0].Level.IsFastChargeCapable" class="connectionTypeSection">
+                  <div v-if="clickedLocation[3][0].Level.IsFastChargeCapable" class="connectionTypeSection">
                     Fast charge: <q-icon name="check_circle" color="gree-14" size="25px" />
                   </div>
 
@@ -70,11 +70,11 @@
                   </div>
 
                   <div class="q-mt-lg">
-                    <q-btn color="primary" class="full-width">
+                    <q-btn v-if="!isMakerAddressInViaArray" @click="addMakerAddress" color="primary" class="full-width">
                       Add marker to route
                     </q-btn>
 
-                    <q-btn color="orange" class="full-width">
+                    <q-btn v-else @click="removeMarkerAddress" color="orange" class="full-width">
                       Remove marker from route
                     </q-btn>
                   </div>
@@ -84,35 +84,35 @@
           </q-item>
 
           <q-separator spaced inset />
-          <q-item>
+          <q-item v-if="clickedLocation[4]">
             <q-item-section>
 
               <q-item-label class="text-h6 q-pl-sm">Company</q-item-label>
               <q-item-label caption>
 
-                <div v-if="clickLocation[4].Title" class="row companySection">
+                <div v-if="clickedLocation[4].Title" class="row companySection">
                   <q-icon size="35px" name="business" class="q-mr-sm" color="white" />
-                  <div class="companySection">{{ clickLocation[4].Title }}</div>
+                  <div class="companySection">{{ clickedLocation[4].Title }}</div>
                 </div>
 
                 <div class="row companySection">
-                  <div v-if="clickLocation[4].WebsiteURL" class="addressSection">
+                  <div v-if="clickedLocation[4].WebsiteURL" class="addressSection">
                     <q-icon size="35px" name="contact_page" class="q-mr-sm" color="white" />
-                    <a :href="clickLocation[4].WebsiteURL">{{ clickLocation[4].WebsiteURL }}</a>
+                    <a :href="clickedLocation[4].WebsiteURL">{{ clickedLocation[4].WebsiteURL }}</a>
                   </div>
                 </div>
 
                 <div class="row companySection">
-                  <div v-if="clickLocation[4].PhonePrimaryContact">
+                  <div v-if="clickedLocation[4].PhonePrimaryContact">
                     <q-icon size="35px" name="local_phone" class="q-mr-sm" color="white" />
-                    {{ clickLocation[4].PhonePrimaryContact }}
+                    {{ clickedLocation[4].PhonePrimaryContact }}
                   </div>
                 </div>
 
                 <div class="row companySection">
-                  <div v-if="clickLocation[4].ContactEmail">
+                  <div v-if="clickedLocation[4].ContactEmail">
                     <q-icon size="35px" name="mail" class="q-mr-sm" color="white" />
-                    {{ clickLocation[4].ContactEmail }}
+                    {{ clickedLocation[4].ContactEmail }}
                   </div>
                 </div>
 
@@ -135,8 +135,12 @@ export default defineComponent({
       required: true
     },
 
-    clickLocation: {
+    clickedLocation: {
       type: Object
+    },
+
+    via: {
+      type: Array
     }
   },
 
@@ -146,8 +150,43 @@ export default defineComponent({
       set: (val) => emit('update:dialog', false)
     })
 
+    const isMakerAddressInViaArray = computed(() => {
+      for (let i = 0; i < props.via.length; i++) {
+        if (props.via[i][2] === currentMakerAddress.value[2]) {
+          return true
+        }
+      }
+
+      return false
+    })
+
+    const currentMakerAddress = computed(() => {
+      const lat = props.clickedLocation[0]
+      const lng = props.clickedLocation[1]
+      const addrL1 = !props.clickedLocation[2].AddressLine1 ? '' : props.clickedLocation[2].AddressLine1
+      const addrL2 = !props.clickedLocation[2].AddressLine2 ? '' : props.clickedLocation[2].AddressLine2
+      const town = !props.clickedLocation[2].Town ? '' : props.clickedLocation[2].Town
+      const postcode = !props.clickedLocation[2].Postcode ? '' : props.clickedLocation[2].Postcode
+      const title = !props.clickedLocation[2].Country.Title ? '' : props.clickedLocation[2].Country.Title
+
+      const address = addrL1 + ' ' + addrL2 + ' ' + town + ' ' + postcode + ' ' + title
+
+      return [lat, lng, address]
+    })
+
+    const addMakerAddress = () => {
+      emit('addToViaArray', currentMakerAddress.value)
+    }
+
+    const removeMarkerAddress = () => {
+      emit('removeFromViaArray', currentMakerAddress.value)
+    }
+
     return {
-      dialogComputed
+      dialogComputed,
+      addMakerAddress,
+      removeMarkerAddress,
+      isMakerAddressInViaArray
     }
   }
 })
