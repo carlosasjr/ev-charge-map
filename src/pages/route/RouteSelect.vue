@@ -31,8 +31,7 @@
       :label="data.label"
       v-if="data.show"
       @address="getAddress($event)"
-      @input-visible="data.show = $event "
-
+      @input-visible="data.show = $event"
       />
 
   </q-page>

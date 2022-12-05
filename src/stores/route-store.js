@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { api } from 'src/boot/axios'
 
 export const useRouteStore = defineStore('route', {
   state: () => ({
@@ -15,8 +16,15 @@ export const useRouteStore = defineStore('route', {
   },
 
   actions: {
+    async store (route) {
+      try {
+        await api.post('/api/routes', route)
+      } catch (error) {
+        if (error) throw error
+      }
+    },
+
     setRoute (route) {
-      console.log(route)
       this.route = route
     },
 

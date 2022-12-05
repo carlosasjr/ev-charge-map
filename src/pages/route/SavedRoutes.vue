@@ -2,7 +2,7 @@
   <q-page id="saveRoutes">
     <q-toolbar class="text-white bg-teal-8">
       <q-toolbar-title>Saved Routes</q-toolbar-title>
-      <q-btn flat round dense icon="add" size="20px" />
+      <q-btn @click="isLoggedInAddRoute" flat round dense icon="add" size="20px" />
     </q-toolbar>
 
     <div class="section-title">
@@ -51,10 +51,21 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'RouteSelectPage',
-  setup () { }
+  setup () {
+    const router = useRouter()
+
+    const isLoggedInAddRoute = () => {
+      router.push('/route/add-route')
+    }
+
+    return {
+      isLoggedInAddRoute
+    }
+  }
 })
 </script>
 
