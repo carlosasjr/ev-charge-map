@@ -1,5 +1,22 @@
 <template>
+  <q-btn
+   v-if="routeStore.hasRoute"
+   @click="data.showSteps = true"
+   class="show-steps-btn"
+   color="black"
+   text-color="white"
+   label="Show Route"
+   />
+
   <div id="map"></div>
+
+  <ShowSteps
+    v-model:showSteps="data.showSteps"
+    v-model:from="routeStore.getRoute.from"
+    v-model:to="routeStore.getRoute.to"
+    v-model:via="data.via"
+
+  />
 
   <ChargerInfo
     v-model:clickedLocation="data.clickedLocation"
@@ -16,11 +33,13 @@ import { googleObject } from '../boot/google'
 import { axiosOpenCharge } from 'src/boot/axios'
 import { useRouteStore } from 'src/stores/route-store'
 import ChargerInfo from 'src/components/mapPage/ChargerInfo.vue'
+import ShowSteps from 'src/components/mapPage/ShowSteps.vue'
 
 export default defineComponent({
   name: 'MapPage',
   components: {
-    ChargerInfo
+    ChargerInfo,
+    ShowSteps
   },
 
   setup () {
@@ -33,6 +52,7 @@ export default defineComponent({
 
     const data = reactive({
       dialog: false,
+      showSteps: false,
       via: [],
       clickedLocation: null,
       routeResults: null
@@ -192,6 +212,7 @@ export default defineComponent({
 
     return {
       data,
+      routeStore,
       addToViaArray,
       removeFromViaArray
     }
@@ -206,5 +227,11 @@ export default defineComponent({
   position: absolute;
   top: 0px;
   left: 0px;
+}
+
+.show-steps-btn {
+  position: absolute;
+  z-index: 1;
+  margin: 10px;
 }
 </style>
