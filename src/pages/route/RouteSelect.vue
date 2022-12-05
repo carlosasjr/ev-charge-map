@@ -5,34 +5,32 @@
       <q-btn to="/route/saved-routes" flat round dense icon="favorites" color="red" />
     </q-toolbar>
 
-    <div class="form-style q-pa-md q-gutter-md">
+    <q-form @submit.prevent="handleSearch" class="form-style q-pa-md q-gutter-md">
       <div class="text-h6 q-pb-md">
         Where would you like to go?
       </div>
 
-      <q-input v-model="data.form.from"  @click="setAddress('From')" outlined stack-label label="From">
+      <q-input v-model="data.form.from" @click="setAddress('From')" outlined stack-label label="From" readonly
+        tabindex="-1" lazy-rules :rules="[(val) => (val && val.length > 0) || 'Please enter a from location']">
         <template v-slot:append>
-          <q-icon name="close" />
+          <q-icon name="close" @click="data.form.from = ''" />
         </template>
       </q-input>
 
-      <q-input v-model="data.form.to" @click="setAddress('To')" outlined stack-label label="To">
+      <q-input v-model="data.form.to" @click="setAddress('To')" outlined stack-label label="To" readonly tabindex="-1"
+        lazy-rules :rules="[(val) => (val && val.length > 0) || 'Please enter a to location']">
         <template v-slot:append>
-          <q-icon name="close" />
+          <q-icon name="close" @click="data.form.to = ''" />
         </template>
       </q-input>
 
       <div>
-        <q-btn @click="handleSearch" size="lg" class="full-width" color="black" label="Search" />
+        <q-btn type="submit" size="lg" class="full-width" color="black" label="Search" />
       </div>
-    </div>
+    </q-form>
 
-    <InputAutocomplete
-      :label="data.label"
-      v-if="data.show"
-      @address="getAddress($event)"
-      @input-visible="data.show = $event"
-      />
+    <InputAutocomplete :label="data.label" v-if="data.show" @address="getAddress($event)"
+      @input-visible="data.show = $event" />
 
   </q-page>
 </template>

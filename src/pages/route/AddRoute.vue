@@ -14,7 +14,7 @@
       <q-input v-model="data.form.name" outlined stack-label label="Name" lazy-rules
         :rules="[(val) => (val && val.length > 0) || 'Please enter a name for this route']">
         <template v-slot:append>
-          <q-icon name="close" />
+          <q-icon name="close" @click="data.form.name = ''"  />
         </template>
       </q-input>
 
@@ -25,14 +25,14 @@
       <q-input v-model="data.form.from" @click="setAddress('From')" outlined stack-label label="From" readonly tabindex="-1"
         lazy-rules :rules="[(val) => (val && val.length > 0) || 'Please enter a from location']">
         <template v-slot:append>
-          <q-icon name="close" />
+          <q-icon name="close" @click="data.form.from = ''"  />
         </template>
       </q-input>
 
       <q-input v-model="data.form.to" @click="setAddress('To')" outlined stack-label label="To" readonly tabindex="-1" lazy-rules
         :rules="[(val) => (val && val.length > 0) || 'Please enter a to location']">
         <template v-slot:append>
-          <q-icon name="close" />
+          <q-icon name="close" @click="data.form.to = ''" />
         </template>
       </q-input>
 

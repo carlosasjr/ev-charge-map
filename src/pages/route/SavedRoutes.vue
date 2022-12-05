@@ -39,7 +39,7 @@
           </q-item-section>
 
           <q-item-section side botton>
-            <q-btn class="q-ma-sm" color="green" label="Go to map" size="sm" />
+            <q-btn @click="showSavedRouteOnMap(route)" class="q-ma-sm" color="green" label="Go to map" size="sm" />
             <q-btn class="q-mx-sm" color="red" label="Delete" size="sm" />
           </q-item-section>
         </q-item>
@@ -74,8 +74,15 @@ export default defineComponent({
       router.push('/route/add-route')
     }
 
+    const showSavedRouteOnMap = (route) => {
+      routeStore.setRoute(route)
+
+      router.push('/map')
+    }
+
     return {
       isLoggedInAddRoute,
+      showSavedRouteOnMap,
       routeStore
     }
   }
