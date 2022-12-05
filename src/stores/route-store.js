@@ -7,18 +7,31 @@ export const useRouteStore = defineStore('route', {
       from: '',
       to: '',
       range: ''
-    }
+    },
+
+    savedRoutes: []
   }),
 
   getters: {
     getRoute: (state) => { return state.route },
-    hasRoute: (state) => { return state.from !== '' && state.to !== '' }
+    hasRoute: (state) => { return state.from !== '' && state.to !== '' },
+    getAllSavedRoutes: (state) => { return state.savedRoutes }
   },
 
   actions: {
     async store (route) {
       try {
         await api.post('/api/routes', route)
+      } catch (error) {
+        if (error) throw error
+      }
+    },
+
+    async showAllSavedRoutesByUserId (id) {
+      try {
+        const response = await api.get(`/api/user/${id}/routes`)
+        this.savedRoutes = response.data.data
+        return true
       } catch (error) {
         if (error) throw error
       }
@@ -34,6 +47,8 @@ export const useRouteStore = defineStore('route', {
         to: '',
         range: ''
       }
+
+      this.savedRoutes = []
     }
 
   },

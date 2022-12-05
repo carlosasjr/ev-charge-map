@@ -9,30 +9,30 @@
       <div class="text-h6 q-mx-sm">Select one of your save routes!</div>
     </div>
 
-    <div class="text-center q-pt-lg">
-      <q-btn flat round dense icon="add_circle_outline" size="33px" />
+    <div v-if="(routeStore.getAllSavedRoutes.length == 0)" class="text-center q-pt-lg">
+      <q-btn to="/route/add-route" flat round dense icon="add_circle_outline" size="33px" />
       <div class="text-h6">Add some routes!</div>
       <div class="q-pa-md info">This is where you can add most favorite or common jorneys!</div>
     </div>
 
-    <q-scroll-area class="list">
-      <q-list>
+    <q-scroll-area class="list" v-else>
+      <q-list v-for="(route, index) in routeStore.getAllSavedRoutes" :key="index">
         <q-item>
           <q-item-section top avatar>
             <q-avatar color="green" text-color="white" icon="directions" />
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>A cool new road!</q-item-label>
+            <q-item-label>{{ route.name }}</q-item-label>
             <q-item-label caption>
               <div class="q-px-sm">
-                <strong>From</strong>: This is the from section
+                <strong>From</strong>: {{ route.from }}
               </div>
               <div class="q-px-sm">
-                <strong>To</strong>: This is the from section
+                <strong>To</strong>: {{ route.to }}
               </div>
               <div class="q-px-sm">
-                <strong>Search Radius</strong>: 3
+                <strong>Search Radius</strong>: {{ route.range }}
               </div>
 
             </q-item-label>
@@ -50,20 +50,33 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRouteStore } from 'src/stores/route-store'
+import { useUserStore } from 'src/stores/user-store'
 
 export default defineComponent({
   name: 'RouteSelectPage',
   setup () {
     const router = useRouter()
+    const routeStore = useRouteStore()
+    const useStore = useUserStore()
+
+    onMounted(async () => {
+      try {
+        await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
+      } catch (error) {
+
+      }
+    })
 
     const isLoggedInAddRoute = () => {
       router.push('/route/add-route')
     }
 
     return {
-      isLoggedInAddRoute
+      isLoggedInAddRoute,
+      routeStore
     }
   }
 })
