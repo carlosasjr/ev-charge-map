@@ -176,10 +176,12 @@ export default defineComponent({
 
     const addMakerAddress = () => {
       emit('addToViaArray', currentMakerAddress.value)
+      dialogComputed.value = false
     }
 
     const removeMarkerAddress = () => {
       emit('removeFromViaArray', currentMakerAddress.value)
+      dialogComputed.value = false
     }
 
     return {

@@ -27,6 +27,7 @@ export default defineComponent({
     const routeStore = useRouteStore()
 
     let map = null
+    const markers = []
     const locations = []
     const latLngs = []
 
@@ -129,6 +130,8 @@ export default defineComponent({
           map
         })
 
+        markers.push(marker)
+
         window.google.maps.event.addListener(marker, 'click', () => {
           data.clickedLocation = singleLocation
           data.dialog = true
@@ -137,26 +140,47 @@ export default defineComponent({
     }
 
     const addToViaArray = (address) => {
+      setSelectedMarker(address, true)
       data.via.push(address)
     }
 
     const removeFromViaArray = (address) => {
-      /* const array = toRaw(data.via)
+      setSelectedMarker(address, false)
+      data.via = data.via.filter((via) => {
+        return via[2] !== address[2]
+      })
+    }
 
-      data.via = []
-
-      for (let i = 0; i < array.length; i++) {
-        if (array[i][2] === address[2]) {
-          array.splice(i, 1)
+    const setSelectedMarker = (address, markerIsSeleted) => {
+      for (let i = 0; i < markers.length; i++) {
+        if (markers[i].position.lat() === address[0] && markers[i].position.lng() === address[1]) {
+          markers[i].setMap(null)
         }
       }
 
-      for (let i = 0; i < array.length; i++) {
-        data.via.push(array[1])
-      } */
+      let singleLocation = null
+      for (let i = 0; i < locations.length; i++) {
+        if (locations[i][0] === address[0] && locations[i][1] === address[1]) {
+          singleLocation = locations[i]
+        }
+      }
 
-      data.via = data.via.filter((via) => {
-        return via[2] !== address[2]
+      let image = null
+
+      if (markerIsSeleted) image = 'mapIcons/charger.png'
+
+      const marker = new window.google.maps.Marker({
+        position: new window.google.maps.LatLng(singleLocation[0], singleLocation[1]),
+        map,
+        icon: image,
+        animation: window.google.maps.Animation.DROP
+      })
+
+      markers.push(marker)
+
+      window.google.maps.event.addListener(marker, 'click', () => {
+        data.clickedLocation = singleLocation
+        data.dialog = true
       })
     }
 
