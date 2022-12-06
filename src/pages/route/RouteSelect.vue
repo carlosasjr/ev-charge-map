@@ -24,6 +24,10 @@
         </template>
       </q-input>
 
+      <RangeSlider
+        v-model:range="data.form.range"
+      />
+
       <div>
         <q-btn type="submit" size="lg" class="full-width" color="black" label="Search" />
       </div>
@@ -40,6 +44,7 @@ import { defineComponent, reactive } from 'vue'
 import InputAutocomplete from 'src/components/routePage/InputAutocomplete.vue'
 import { useRouteStore } from 'src/stores/route-store'
 import { useRouter } from 'vue-router'
+import RangeSlider from 'src/components/routePage/RangeSlider.vue'
 
 export default defineComponent({
   name: 'RouteSelectPage',
@@ -53,7 +58,7 @@ export default defineComponent({
       form: {
         from: '',
         to: '',
-        range: '2'
+        range: 1
       }
     })
 
@@ -87,7 +92,7 @@ export default defineComponent({
       handleSearch
     }
   },
-  components: { InputAutocomplete }
+  components: { InputAutocomplete, RangeSlider }
 })
 </script>
 

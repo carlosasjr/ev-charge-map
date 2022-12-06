@@ -27,6 +27,14 @@ export const useRouteStore = defineStore('route', {
       }
     },
 
+    async delete (route) {
+      try {
+        await api.delete(`/api/routes/${route.id}`)
+      } catch (error) {
+        if (error) throw error
+      }
+    },
+
     async showAllSavedRoutesByUserId (id) {
       try {
         const response = await api.get(`/api/user/${id}/routes`)

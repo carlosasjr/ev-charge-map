@@ -36,6 +36,8 @@
         </template>
       </q-input>
 
+      <RangeSlider v-model:range="data.range" />
+
       <div>
         <q-btn @click="handleSave" size="lg" class="full-width" color="black" label="Save Route" />
       </div>
@@ -49,6 +51,7 @@
 <script>
 import { defineComponent, reactive } from 'vue'
 import InputAutocomplete from 'src/components/routePage/InputAutocomplete.vue'
+import RangeSlider from 'src/components/routePage/RangeSlider.vue'
 import { useRouteStore } from 'src/stores/route-store'
 import { useUserStore } from 'src/stores/user-store'
 import { useRouter } from 'vue-router'
@@ -56,7 +59,7 @@ import useNotify from 'src/composables/useNotify'
 
 export default defineComponent({
   name: 'AddRoutePage',
-  components: { InputAutocomplete },
+  components: { InputAutocomplete, RangeSlider },
   setup () {
     const router = useRouter()
     const routeStore = useRouteStore()
@@ -66,7 +69,7 @@ export default defineComponent({
     const data = reactive({
       show: false,
       label: '',
-      range: '1',
+      range: 1,
       form: {
         name: '',
         from: '',

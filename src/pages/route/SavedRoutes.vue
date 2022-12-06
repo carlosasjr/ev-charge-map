@@ -40,7 +40,7 @@
 
           <q-item-section side botton>
             <q-btn @click="showSavedRouteOnMap(route)" class="q-ma-sm" color="green" label="Go to map" size="sm" />
-            <q-btn class="q-mx-sm" color="red" label="Delete" size="sm" />
+            <q-btn @click="deleteSavedRouteOnMap(route)" class="q-mx-sm" color="red" label="Delete" size="sm" />
           </q-item-section>
         </q-item>
       </q-list>
@@ -54,6 +54,7 @@ import { defineComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRouteStore } from 'src/stores/route-store'
 import { useUserStore } from 'src/stores/user-store'
+import useNotify from 'src/composables/useNotify'
 
 export default defineComponent({
   name: 'RouteSelectPage',
@@ -61,12 +62,13 @@ export default defineComponent({
     const router = useRouter()
     const routeStore = useRouteStore()
     const useStore = useUserStore()
+    const { notifyError, notifySuccess } = useNotify()
 
     onMounted(async () => {
       try {
         await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
       } catch (error) {
-
+        notifyError()
       }
     })
 
@@ -80,9 +82,22 @@ export default defineComponent({
       router.push('/map')
     }
 
+    const deleteSavedRouteOnMap = async (route) => {
+      try {
+        await routeStore.delete(route)
+
+        await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
+
+        notifySuccess('Route deleted succefully')
+      } catch (error) {
+        notifyError(error.message)
+      }
+    }
+
     return {
       isLoggedInAddRoute,
       showSavedRouteOnMap,
+      deleteSavedRouteOnMap,
       routeStore
     }
   }
