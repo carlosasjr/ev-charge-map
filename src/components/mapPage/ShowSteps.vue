@@ -15,7 +15,7 @@
         <q-btn
         :href="mapLink()"
         target="_blanck"
-        :disable="(via.length < 1)"
+        :disable="from === ''"
         color="black"
         class="full-width"
         label="Let's go" />

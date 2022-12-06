@@ -38,6 +38,14 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async logout () {
+      try {
+        await api.post('logout')
+      } catch (error) {
+        if (error) throw error
+      }
+    },
+
     async register (user) {
       try {
         await api.post('register', user)

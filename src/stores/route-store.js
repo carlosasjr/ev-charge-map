@@ -35,9 +35,9 @@ export const useRouteStore = defineStore('route', {
       }
     },
 
-    async showAllSavedRoutesByUserId (id) {
+    async showAllSavedRoutesByUserId () {
       try {
-        const response = await api.get(`/api/user/${id}/routes`)
+        const response = await api.get('/api/user/routes')
         this.savedRoutes = response.data.data
         return true
       } catch (error) {

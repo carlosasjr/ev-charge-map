@@ -69,7 +69,7 @@
                     Fast charge: <q-icon name="clear" color="red-14" size="25px" />
                   </div>
 
-                  <div class="q-mt-lg">
+                  <div class="q-mt-lg" v-if="routeStore.getRoute.from !== ''">
                     <q-btn v-if="!isMakerAddressInViaArray" @click="addMakerAddress" color="primary" class="full-width">
                       Add marker to route
                     </q-btn>
@@ -127,6 +127,7 @@
 
 <script>
 import { defineComponent, computed } from 'vue'
+import { useRouteStore } from 'src/stores/route-store'
 
 export default defineComponent({
   props: {
@@ -145,6 +146,8 @@ export default defineComponent({
   },
 
   setup (props, { emit }) {
+    const routeStore = useRouteStore()
+
     const dialogComputed = computed({
       get: () => props.dialog,
       set: (val) => emit('update:dialog', false)
@@ -188,7 +191,8 @@ export default defineComponent({
       dialogComputed,
       addMakerAddress,
       removeMarkerAddress,
-      isMakerAddressInViaArray
+      isMakerAddressInViaArray,
+      routeStore
     }
   }
 })

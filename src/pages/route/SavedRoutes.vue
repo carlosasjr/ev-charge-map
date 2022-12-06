@@ -10,7 +10,7 @@
     </div>
 
     <div v-if="(routeStore.getAllSavedRoutes.length == 0)" class="text-center q-pt-lg">
-      <q-btn to="/route/add-route" flat round dense icon="add_circle_outline" size="33px" />
+      <q-btn @click="isLoggedInAddRoute" flat round dense icon="add_circle_outline" size="33px" />
       <div class="text-h6">Add some routes!</div>
       <div class="q-pa-md info">This is where you can add most favorite or common jorneys!</div>
     </div>
@@ -67,14 +67,25 @@ export default defineComponent({
     const $q = useQuasar()
 
     onMounted(async () => {
-      try {
-        await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
-      } catch (error) {
-        notifyError()
-      }
+
     })
 
     const isLoggedInAddRoute = () => {
+      if (!useStore.getUser.email) {
+        const response = $q.dialog({
+          title: 'You\'re not logged in!',
+          message: 'Login to add and see your saved routes',
+          cancel: true,
+          persistent: true
+        })
+
+        response.onOk(async () => {
+          router.push('/auth')
+        })
+
+        return
+      }
+
       router.push('/route/add-route')
     }
 
@@ -96,7 +107,7 @@ export default defineComponent({
         try {
           await routeStore.delete(route)
 
-          await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
+          await routeStore.showAllSavedRoutesByUserId()
 
           notifySuccess('Route deleted succesfully')
         } catch (error) {

@@ -41,6 +41,7 @@
 import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from 'stores/user-store'
+import { useRouteStore } from 'src/stores/route-store'
 import useNotify from 'src/composables/useNotify'
 
 export default defineComponent({
@@ -48,6 +49,7 @@ export default defineComponent({
   setup () {
     const userStore = useUserStore()
     const router = useRouter()
+    const routeStore = useRouteStore()
     const { notifyError, notifySuccess } = useNotify()
 
     const handleLogin = async () => {
@@ -58,6 +60,8 @@ export default defineComponent({
         await userStore.login(data.form.email, data.form.password)
         const user = await userStore.fetchUser()
         userStore.setUser(user)
+
+        await routeStore.showAllSavedRoutesByUserId()
 
         notifySuccess('Welcome back, ' + userStore.getFirstName + '!')
         router.push('/route')

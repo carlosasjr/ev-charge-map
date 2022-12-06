@@ -1,30 +1,14 @@
 <template>
-  <q-btn
-   v-if="routeStore.hasRoute"
-   @click="data.showSteps = true"
-   class="show-steps-btn"
-   color="black"
-   text-color="white"
-   label="Show Route"
-   />
+  <q-btn v-if="routeStore.hasRoute" @click="data.showSteps = true" class="show-steps-btn" color="black"
+    text-color="white" label="Show Route" />
 
   <div id="map"></div>
 
-  <ShowSteps
-    v-model:showSteps="data.showSteps"
-    v-model:from="routeStore.getRoute.from"
-    v-model:to="routeStore.getRoute.to"
-    v-model:via="data.via"
+  <ShowSteps v-model:showSteps="data.showSteps" v-model:from="routeStore.getRoute.from"
+    v-model:to="routeStore.getRoute.to" v-model:via="data.via" />
 
-  />
-
-  <ChargerInfo
-    v-model:clickedLocation="data.clickedLocation"
-    v-model:dialog="data.dialog"
-    v-model:via="data.via"
-    @addToViaArray="addToViaArray"
-    @removeFromViaArray="removeFromViaArray"
-  />
+  <ChargerInfo v-model:clickedLocation="data.clickedLocation" v-model:dialog="data.dialog" v-model:via="data.via"
+    @addToViaArray="addToViaArray" @removeFromViaArray="removeFromViaArray" />
 </template>
 
 <script>
@@ -46,8 +30,10 @@ export default defineComponent({
     const routeStore = useRouteStore()
 
     let map = null
-    const markers = []
-    const locations = []
+    let markers = []
+    let locations = []
+    let currentZoomNumber = 0
+    let boundingBoxString = ''
     const latLngs = []
 
     const data = reactive({
@@ -66,6 +52,19 @@ export default defineComponent({
       if (data.routeResults) {
         await getChargePointData(data.routeResults)
       }
+
+      window.google.maps.event.addListener(map, 'zoom_changed', async function (e) {
+        currentZoomNumber = map.getZoom()
+      })
+
+      window.google.maps.event.addListener(map, 'bounds_changed', async () => {
+        const bbox = map.getBounds()
+        boundingBoxString = '(' + bbox.Ia.hi + ',' + bbox.Wa.hi + '),(' + bbox.Ia.lo + ',' + bbox.Wa.lo + ')'
+
+        if (routeStore.getRoute.from === '' && routeStore.getRoute.to === '') {
+          await getChargePointData(null)
+        }
+      })
     })
 
     const initMap = () => {
@@ -91,6 +90,14 @@ export default defineComponent({
       return map
     }
 
+    const removeMarkers = () => {
+      for (let i = 0; i < locations.length; i++) {
+        markers[i].setMap(null)
+      }
+
+      markers = []
+    }
+
     const getDirections = (map, directionsRenderer, directionsService) => {
       directionsRenderer.setMap(map)
 
@@ -110,18 +117,26 @@ export default defineComponent({
     }
 
     const getChargePointData = async (newRouteResult) => {
-      newRouteResult.routes[0].legs[0].steps.forEach(step => {
-        latLngs.push('(' + step.lat_lngs[0].lat() + ',' + step.lat_lngs[0].lng() + ')')
-      })
+      if (markers.length > 0) removeMarkers()
+
+      if (newRouteResult) {
+        newRouteResult.routes[0].legs[0].steps.forEach(step => {
+          latLngs.push('(' + step.lat_lngs[0].lat() + ',' + step.lat_lngs[0].lng() + ')')
+        })
+      }
+
+      locations = []
 
       const res = await axiosOpenCharge.get(
-        '?output=json' +
-        '&countrycode=BR' +
-        '&polyline=' + latLngs +
-        '&compact=false' +
-        '&verbose=false' +
-        '&maxresults=100' +
-        '&key=8d4471c5-ee49-432f-957c-8755617cb09c'
+        ' ?output=json' +
+          '&countrycode=BR' +
+          `&boundingbox=${currentZoomNumber >= 8 ? boundingBoxString : ''}` +
+          '&polyline=' + latLngs +
+          '&distance=' + routeStore.getRoute.range +
+          '&compact=false' +
+          '&verbose=false' +
+          '&maxresults=300' +
+          '&key=8d4471c5-ee49-432f-957c-8755617cb09c'
       )
 
       const result = res.data.map((data) => {
@@ -139,6 +154,8 @@ export default defineComponent({
       }
 
       setMarkers()
+
+      map.setOptions({ minZoom: 5 })
     }
 
     const setMarkers = () => {
@@ -222,7 +239,7 @@ export default defineComponent({
 
 <style lang='scss'>
 #map {
-  width:100%;
+  width: 100%;
   height: 100%;
   position: absolute;
   top: 0px;

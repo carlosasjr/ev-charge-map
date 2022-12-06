@@ -51,11 +51,15 @@
 <script>
 import { defineComponent, reactive } from 'vue'
 import { useUserStore } from 'stores/user-store'
+import useNotify from 'src/composables/useNotify'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'RegisterSectionPage',
   setup () {
     const useStore = useUserStore()
+    const router = useRoute()
+    const { notifyError, notifySuccess } = useNotify()
 
     const data = reactive({
       loading: false,
@@ -76,8 +80,11 @@ export default defineComponent({
         await useStore.register(data.form)
         const user = await useStore.fetchUser()
         useStore.setUser(user)
-      } catch (error) {
 
+        notifySuccess('Welcome ' + data.form.first_name)
+        router.push('/route')
+      } catch (error) {
+        notifyError(error.message)
       } finally {
         data.loading = false
       }

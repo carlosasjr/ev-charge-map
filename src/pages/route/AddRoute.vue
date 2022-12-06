@@ -105,6 +105,7 @@ export default defineComponent({
         }
 
         await routeStore.store(route)
+        await routeStore.showAllSavedRoutesByUserId()
 
         router.push('/route/saved-routes')
       } catch (error) {
