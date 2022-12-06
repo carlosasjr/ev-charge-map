@@ -1,7 +1,12 @@
 
+import { useUserStore } from '../stores/user-store'
+
 const routes = [
   {
     path: '/',
+    beforeEnter: (to, from, next) => {
+      to.fullPath === '/' ? next('/map') : next()
+    },
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
@@ -21,6 +26,10 @@ const routes = [
 
       {
         path: '/auth',
+        beforeEnter: (to, from, next) => {
+          const userStore = useUserStore()
+          !userStore.getUser.email ? next() : next(from.fullPath)
+        },
         component: () => import('pages/AuthPage.vue'),
         children: [
           { path: '', component: () => import('pages/auth/LoginSection.vue') },
@@ -31,6 +40,10 @@ const routes = [
 
       {
         path: '/account',
+        beforeEnter: (to, from, next) => {
+          const userStore = useUserStore()
+          userStore.getUser.email ? next() : next('/auth')
+        },
         component: () => import('pages/AccountPage.vue'),
         children: [
           { path: '', component: () => import('pages/account/AccountMenu.vue') },
