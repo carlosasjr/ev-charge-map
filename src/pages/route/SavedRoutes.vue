@@ -55,6 +55,7 @@ import { useRouter } from 'vue-router'
 import { useRouteStore } from 'src/stores/route-store'
 import { useUserStore } from 'src/stores/user-store'
 import useNotify from 'src/composables/useNotify'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'RouteSelectPage',
@@ -63,6 +64,7 @@ export default defineComponent({
     const routeStore = useRouteStore()
     const useStore = useUserStore()
     const { notifyError, notifySuccess } = useNotify()
+    const $q = useQuasar()
 
     onMounted(async () => {
       try {
@@ -83,15 +85,24 @@ export default defineComponent({
     }
 
     const deleteSavedRouteOnMap = async (route) => {
-      try {
-        await routeStore.delete(route)
+      const dialogRes = $q.dialog({
+        title: `Delete Route "${route.name}"`,
+        message: 'Are you sure you want to delete this route?',
+        cancel: true,
+        persistent: true
+      })
 
-        await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
+      dialogRes.onOk(async () => {
+        try {
+          await routeStore.delete(route)
 
-        notifySuccess('Route deleted succefully')
-      } catch (error) {
-        notifyError(error.message)
-      }
+          await routeStore.showAllSavedRoutesByUserId(useStore.getUser.id)
+
+          notifySuccess('Route deleted succesfully')
+        } catch (error) {
+          notifyError(error.message)
+        }
+      })
     }
 
     return {
