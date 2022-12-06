@@ -4,8 +4,7 @@ let googleObject = null
 
 export default ({ app }) => {
   const id = 'google-maps'
-  const url = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBNCneR4sCi8W9MIjVWsmBiNZp_FYHweFU&libraries=places'
-
+  const url = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`
   googleObject = function () {
     if (!promise) {
       promise = new Promise((resolve, reject) => {

@@ -136,7 +136,7 @@ export default defineComponent({
           '&compact=false' +
           '&verbose=false' +
           '&maxresults=300' +
-          '&key=8d4471c5-ee49-432f-957c-8755617cb09c'
+          '&key=' + process.env.OPEN_MAPS_API_KEY
       )
 
       const result = res.data.map((data) => {

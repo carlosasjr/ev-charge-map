@@ -58,7 +58,8 @@ module.exports = configure(function (/* ctx */) {
       },
 
       env: {
-        GOOGLE_MAPS_API_KEY: 'AIzaSyBNCneR4sCi8W9MIjVWsmBiNZp_FYHweFU'
+        GOOGLE_MAPS_API_KEY: 'AIzaSyBNCneR4sCi8W9MIjVWsmBiNZp_FYHweFU',
+        OPEN_MAPS_API_KEY: '8d4471c5-ee49-432f-957c-8755617cb09c'
       },
 
       vueRouterMode: 'history' // available values: 'hash', 'history'
