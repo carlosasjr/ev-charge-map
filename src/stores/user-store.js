@@ -13,7 +13,12 @@ export const useUserStore = defineStore('user', {
 
   getters: {
     getUser: (state) => { return state.user },
-    getFirstName: (state) => { return state.user.first_name }
+    getFirstName: (state) => { return state.user.first_name },
+    getLastName: (state) => { return state.user.last_name },
+    getFirstLettersOfName: (state) => {
+      return state.user.first_name[0].toUpperCase() +
+             state.user.last_name[0].toUpperCase()
+    }
   },
 
   actions: {
@@ -41,9 +46,17 @@ export const useUserStore = defineStore('user', {
       }
     },
 
+    async update (user) {
+      try {
+        await api.put('api/user', user)
+      } catch (error) {
+        if (error) throw error
+      }
+    },
+
     async fetchUser () {
       try {
-        const response = await api.get('api/user')
+        const response = await api.get('/api/user')
 
         return response.data
       } catch (error) {

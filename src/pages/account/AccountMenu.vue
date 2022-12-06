@@ -5,8 +5,8 @@
     </q-toolbar>
 
     <div class="text-h6 text-center q-pa-xl">
-      <q-avatar size="60px" color="green">JD</q-avatar>
-      <div>Jonh Doe</div>
+      <q-avatar size="60px" color="green">{{ useStore.getFirstLettersOfName }}</q-avatar>
+      <div>{{ useStore.getFirstName }}  {{ useStore.getLastName }}</div>
     </div>
 
     <div class="menu">
@@ -17,7 +17,7 @@
             <q-avatar rounded color="primary" text-color="white" icon="account_box" />
           </q-item-section>
 
-          <q-item-section class="text-size">My Details</q-item-section>
+          <q-item-section @click="goToMyDetail" class="text-size">My Details</q-item-section>
 
           <q-item-section side>
             <q-icon name="arrow_right" size="35px" />
@@ -48,10 +48,19 @@
 
 <script>
 import { defineComponent, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user-store'
 
 export default defineComponent({
   name: 'AccountMenuPage',
   setup () {
+    const router = useRouter()
+    const useStore = useUserStore()
+
+    const goToMyDetail = () => {
+      router.push('/account/my-details')
+    }
+
     const handleLogin = async () => {
       data.loading = true
     }
@@ -66,7 +75,9 @@ export default defineComponent({
 
     return {
       data,
-      handleLogin
+      handleLogin,
+      goToMyDetail,
+      useStore
     }
   }
 })
