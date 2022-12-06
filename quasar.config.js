@@ -10,7 +10,7 @@
 
 const { configure } = require('quasar/wrappers')
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -59,7 +59,8 @@ module.exports = configure(function (/* ctx */) {
 
       env: {
         GOOGLE_MAPS_API_KEY: 'AIzaSyBNCneR4sCi8W9MIjVWsmBiNZp_FYHweFU',
-        OPEN_MAPS_API_KEY: '8d4471c5-ee49-432f-957c-8755617cb09c'
+        OPEN_MAPS_API_KEY: '8d4471c5-ee49-432f-957c-8755617cb09c',
+        API: ctx.dev ? 'http://localhost:8000' : 'https://'
       },
 
       vueRouterMode: 'history' // available values: 'hash', 'history'
