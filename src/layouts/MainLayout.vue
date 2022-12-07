@@ -10,17 +10,17 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above :width="250">
+    <q-drawer  v-model="leftDrawerOpen" show-if-above :width="250">
       <q-scroll-area id="menu-section">
         <q-list padding>
-          <q-item clickable v-ripple to="/map">
+          <q-item exact clickable v-ripple to="/map">
             <q-item-section avatar>
               <q-icon name="explore" />
             </q-item-section>
             <q-item-section> Map </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/route">
+          <q-item exact clickable v-ripple to="/route">
             <q-item-section avatar>
               <q-icon name="directions" />
             </q-item-section>
@@ -28,15 +28,15 @@
             <q-item-section> Routes </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/route/saved-routes">
+          <q-item exact clickable v-ripple to="/route/saved-routes">
             <q-item-section avatar>
-              <q-icon name="favoritess" />
+              <q-icon name="favorite" />
             </q-item-section>
 
-            <q-item-section> Favorites </q-item-section>
+            <q-item-section> Favorite </q-item-section>
           </q-item>
 
-          <q-item v-if="!userStore.getUser.email" clickable v-ripple to="/auth">
+          <q-item  exact v-if="!userStore.getUser.email" clickable v-ripple to="/auth">
             <q-item-section avatar>
               <q-icon name="login" />
             </q-item-section>
@@ -44,7 +44,7 @@
             <q-item-section> Login </q-item-section>
           </q-item>
 
-          <q-item v-if="userStore.getUser.email" clickable v-ripple to="/account">
+          <q-item exact v-if="userStore.getUser.email" clickable v-ripple to="/account">
             <q-item-section avatar>
               <q-icon name="account_circle" />
             </q-item-section>
@@ -85,7 +85,7 @@
       <q-tabs class="text-light bg-teal">
         <q-route-tab to="/map" name="/map" icon="explore" label="Map" />
         <q-route-tab to="/route" name="/route" icon="directions" label="Routes" />
-        <q-route-tab to="/route/saved-routes" name="/favorites" icon="favorites" label="Favorites" />
+        <q-route-tab to="/route/saved-routes" name="/favorite" icon="favorite" label="Favorite" />
         <q-route-tab v-if="userStore.getUser.email" to="/account" name="/account" icon="account_circle"
           label="Account" />
         <q-route-tab v-if="!userStore.getUser.email" to="/auth" name="/auth" icon="login" label="Auth" />
