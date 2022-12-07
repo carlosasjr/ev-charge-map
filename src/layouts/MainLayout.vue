@@ -2,7 +2,7 @@
   <q-layout>
     <q-header class="bg-teal">
       <q-toolbar>
-      <q-img src="/favicon.ico" height="40px" width="40px" />
+        <q-img src="/favicon.ico" height="40px" width="40px" />
         <q-toolbar-title> Ev Charge Map </q-toolbar-title>
 
         <q-btn v-if="userStore.getUser.email" to="/account" flat round dense icon="account_circle" />
@@ -26,6 +26,14 @@
             </q-item-section>
 
             <q-item-section> Routes </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/route/saved-routes">
+            <q-item-section avatar>
+              <q-icon name="favoritess" />
+            </q-item-section>
+
+            <q-item-section> Favorites </q-item-section>
           </q-item>
 
           <q-item v-if="!userStore.getUser.email" clickable v-ripple to="/auth">
@@ -77,9 +85,12 @@
       <q-tabs class="text-light bg-teal">
         <q-route-tab to="/map" name="/map" icon="explore" label="Map" />
         <q-route-tab to="/route" name="/route" icon="directions" label="Routes" />
-        <q-route-tab v-if="userStore.getUser.email" to="/account" name="/account" icon="account_circle" label="Account" />
+        <q-route-tab to="/route/saved-routes" name="/favorites" icon="favorites" label="Favorites" />
+        <q-route-tab v-if="userStore.getUser.email" to="/account" name="/account" icon="account_circle"
+          label="Account" />
         <q-route-tab v-if="!userStore.getUser.email" to="/auth" name="/auth" icon="login" label="Auth" />
-        <q-route-tab v-if="!pwaIsInstalled" @click="handleInstallApp" name="install" icon="install_mobile" label="Install" />
+        <q-route-tab v-if="!pwaIsInstalled" @click="handleInstallApp" name="install" icon="install_mobile"
+          label="Install" />
       </q-tabs>
     </q-footer>
   </q-layout>
