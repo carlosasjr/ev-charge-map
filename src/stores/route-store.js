@@ -14,6 +14,15 @@ export const useRouteStore = defineStore('route', {
 
   getters: {
     getRoute: (state) => { return state.route },
+    getFrom: (state) => {
+      return state.route.from
+    },
+    getTo: (state) => {
+      return state.route.to
+    },
+    getRange: (state) => {
+      return state.route.range
+    },
     hasRoute: (state) => { return state.from !== '' && state.to !== '' },
     getAllSavedRoutes: (state) => { return state.savedRoutes }
   },
