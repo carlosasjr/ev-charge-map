@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { api } from 'src/boot/axios'
+import { api, TOKEN_NAME } from 'src/boot/axios'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -32,7 +32,13 @@ export const useUserStore = defineStore('user', {
 
     async login (email, password) {
       try {
-        await api.post('login', { email, password })
+        const response = await api.post('api/auth/token', { email, password })
+
+        const token = response.data.token
+
+        localStorage.setItem(TOKEN_NAME, token)
+
+        api.defaults.headers.common.Authorization = 'Bearer ' + token
       } catch (error) {
         if (error) throw error
       }
@@ -40,7 +46,9 @@ export const useUserStore = defineStore('user', {
 
     async logout () {
       try {
-        await api.post('logout')
+        await api.post('api/auth/logout')
+
+        localStorage.removeItem(TOKEN_NAME)
       } catch (error) {
         if (error) throw error
       }
@@ -48,7 +56,13 @@ export const useUserStore = defineStore('user', {
 
     async register (user) {
       try {
-        await api.post('register', user)
+        const response = await api.post('api/register', user)
+
+        const token = response.data.token
+
+        localStorage.setItem(TOKEN_NAME, token)
+
+        api.defaults.headers.common.Authorization = 'Bearer ' + token
       } catch (error) {
         if (error) throw error
       }
@@ -64,7 +78,17 @@ export const useUserStore = defineStore('user', {
 
     async fetchUser () {
       try {
-        const response = await api.get('/api/user')
+        const token = localStorage.getItem(TOKEN_NAME)
+
+        if (!token) return
+
+        const response = await api.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        api.defaults.headers.common.Authorization = 'Bearer ' + token
 
         return response.data
       } catch (error) {

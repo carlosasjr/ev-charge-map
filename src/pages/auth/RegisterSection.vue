@@ -52,14 +52,16 @@
 import { defineComponent, reactive } from 'vue'
 import { useUserStore } from 'stores/user-store'
 import useNotify from 'src/composables/useNotify'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { useRouteStore } from 'src/stores/route-store'
 
 export default defineComponent({
   name: 'RegisterSectionPage',
   setup () {
     const useStore = useUserStore()
-    const router = useRoute()
+    const router = useRouter()
     const { notifyError, notifySuccess } = useNotify()
+    const routeStore = useRouteStore()
 
     const data = reactive({
       loading: false,
@@ -76,10 +78,12 @@ export default defineComponent({
       data.loading = true
 
       try {
-        await useStore.getSanctumCookie()
+        // await useStore.getSanctumCookie()
         await useStore.register(data.form)
         const user = await useStore.fetchUser()
         useStore.setUser(user)
+
+        await routeStore.showAllSavedRoutesByUserId()
 
         notifySuccess('Welcome ' + data.form.first_name)
         router.push('/route')

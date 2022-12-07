@@ -31,7 +31,6 @@
 
 import { defineComponent, reactive, watch } from 'vue'
 import { api } from 'src/boot/axios'
-import { useUserStore } from 'stores/user-store'
 
 export default defineComponent({
   name: 'InputAutoComplete',
@@ -44,8 +43,6 @@ export default defineComponent({
   },
 
   setup (props, { emit }) {
-    const useStore = useUserStore()
-
     const data = reactive({
       input: '',
       addresses: []
@@ -54,7 +51,7 @@ export default defineComponent({
     const handleGetPlaces = async (input) => {
       try {
         if (input) {
-          await useStore.getSanctumCookie()
+          // await useStore.getSanctumCookie()
           const response = await api.post('/api/places', { input })
           data.addresses = response.data.places.predictions
         }

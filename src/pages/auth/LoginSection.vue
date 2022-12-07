@@ -56,7 +56,7 @@ export default defineComponent({
       data.loading = true
 
       try {
-        await userStore.getSanctumCookie()
+        // await userStore.getSanctumCookie()
         await userStore.login(data.form.email, data.form.password)
         const user = await userStore.fetchUser()
         userStore.setUser(user)
