@@ -20,7 +20,6 @@ import { googleObject } from '../boot/google'
 import { onMounted, reactive, ref, toRaw, watch } from 'vue'
 import { axiosOpenCharge } from '../boot/axios'
 import { useRouteStore } from '../stores/route-store'
-import { debounce } from 'lodash'
 import { useQuasar } from 'quasar'
 import ChargerInfo from 'src/components/mapPage/ChargerInfo.vue'
 import ShowSteps from 'src/components/mapPage/ShowSteps.vue'
@@ -72,6 +71,7 @@ onMounted(async () => {
     const bbox = map.getBounds()
     // boundingBoxString = '(' + bbox.vb.hi + ',' + bbox.Ra.hi + '),(' + bbox.vb.lo + ',' + bbox.Ra.lo + ')'
     boundingBoxString = '(' + bbox.Ia.hi + ',' + bbox.Wa.hi + '),(' + bbox.Ia.lo + ',' + bbox.Wa.lo + ')'
+
     if (data.route.from === null) { await getChargePointData(null) }
   })
 })
@@ -119,7 +119,7 @@ const removeFromViaArray = (address) => {
   }
 }
 
-const getChargePointData = debounce(async (newRouteResult) => {
+const getChargePointData = async (newRouteResult) => {
   // If markers array is greater than 0 removeMarkers
   if (markers.length > 0) { removeMarkers() }
   let resLatLngs = ''
@@ -182,7 +182,7 @@ const getChargePointData = debounce(async (newRouteResult) => {
       })
     }
   }
-}, 400)
+}
 
 /** Set markers */
 const setMarkers = () => {
